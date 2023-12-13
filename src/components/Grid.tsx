@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Cell from './Cell';
 
 interface Props {
@@ -7,6 +7,8 @@ interface Props {
 	symbol: string;
 	setSymbol: any;
 	isGameEnded: any;
+	endGame: any;
+	isAllCellsInactive: boolean;
 }
 
 const Grid: React.FC<Props> = (props) => {
@@ -21,6 +23,8 @@ const Grid: React.FC<Props> = (props) => {
 					setSymbol={props.setSymbol}
 					setValues={props.setValues}
 					isGameEnded={props.isGameEnded}
+					endGame={props.endGame}
+					isAllCellsInactive={props.isAllCellsInactive}
 				/>
 			))}
 		</div>
