@@ -1,9 +1,5 @@
 import React from 'react';
-// import {
-// 	makeComputerTurnEasy,
-// 	makeComputerTurnHard,
-// 	makeComputerTurnMedium,
-// } from '../computerTurns/ComputerTurns';
+import makeComputerTurnDependsOnDifficulty from '../computerTurns/ComputerTurns';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	changeSymbol,
@@ -19,6 +15,7 @@ import {
 import isGameEnded from '../utils/isGameEnded';
 import endGame from 'utils/endGame';
 import { Value } from 'utils/interfaces';
+import { computerTurnDelay, endGameDelay } from 'utils/constants';
 
 interface Props {
 	id: number;
@@ -34,9 +31,17 @@ const Cell: React.FC<Props> = (props) => {
 
 	const dispatch = useDispatch();
 
+	const endTurn = (values: Value[]) => {
+		dispatch(setValues({ values: values }));
+
+		if (isGameEnded(values)) {
+			endGame(dispatch, endGameDelay);
+			return true;
+		}
+	};
+
 	const makeTurn = () => {
 		if (!isComputerTurn) {
-			console.log(symbol);
 			dispatch(changeSymbol());
 			if (values[props.id].active) {
 				const newValues = [...values];
@@ -44,13 +49,7 @@ const Cell: React.FC<Props> = (props) => {
 					value: symbol,
 					active: false,
 				};
-				dispatch(setValues({ values: newValues }));
-
-				if (isGameEnded(newValues)) {
-					endGame(dispatch);
-					return;
-				}
-
+				if (endTurn(newValues)) return;
 				if (!is2Players) {
 					makeComputerTurn(newValues);
 				}
@@ -60,51 +59,28 @@ const Cell: React.FC<Props> = (props) => {
 
 	const makeComputerTurn = (values: Value[]) => {
 		dispatch(setIsComputerTurn({ value: true }));
-
 		setTimeout(() => {
-			switch (difficulty) {
-				case 'easy':
-					// makeComputerTurnEasy(props.values, props.setValues, props.symbol);
-					const newValues = [...values];
-					const indexesToTurn = newValues.reduce(
-						(
-							acc: number[],
-							value: { value: string; active: boolean },
-							index: number
-						) => (value.value === '' ? [...acc, index] : acc),
-						[]
-					);
-					const randIndex =
-						indexesToTurn[Math.floor(Math.random() * indexesToTurn.length)];
-					newValues[randIndex] = {
-						value: symbol === '×' ? '○' : '×',
-						active: false,
-					};
-					dispatch(setValues({ values: newValues }));
-					if (isGameEnded(newValues)) {
-						endGame(dispatch);
-						return;
-					}
-					break;
-				// case 'medium':
-				// 	makeComputerTurnMedium();
-				// 	break;
-				// case 'hard':
-				// 	makeComputerTurnHard();
-				// 	break;
-				default:
-					alert('Error!');
-			}
+			makeComputerTurnDependsOnDifficulty(
+				difficulty,
+				[...values],
+				symbol,
+				endTurn
+			);
 			dispatch(changeSymbol());
 			dispatch(setIsComputerTurn({ value: false }));
-		}, 1000);
+		}, computerTurnDelay);
 	};
 
 	return (
 		<button
-			className={`w-16 h-16 text-5xl md:w-24 md:h-24 md:text-7xl xl:w-32 xl:h-32 rounded 
-			xl:text-9xl bg-blue-50 hover:bg-blue-100 disabled:bg-blue-200 text-blue-300 
-			transition-all font-sans leading-none flex justify-center items-center`}
+			className={`w-16 h-16 text-5xl 
+			md:w-24 md:h-24 md:text-7xl 
+			xl:w-32 xl:h-32 xl:text-9xl 
+			rounded bg-blue-50 text-blue-300 transition-all font-sans 
+			leading-none flex justify-center items-center drop-shadow-sm
+			hover:bg-blue-100 
+			disabled:bg-blue-200 
+			`}
 			onClick={makeTurn}
 			disabled={!values[props.id].active || !isGameContinues}
 		>

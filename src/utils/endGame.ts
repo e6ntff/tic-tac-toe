@@ -1,6 +1,5 @@
-import { Dispatch } from "@reduxjs/toolkit";
-import { setIsGameContinues, setValues } from "./store";
-
+import { Dispatch } from '@reduxjs/toolkit';
+import { setIsGameContinues, setValues } from './store';
 
 const resetGame = (dispatch: Dispatch) => {
 	dispatch(
@@ -21,11 +20,11 @@ const resetGame = (dispatch: Dispatch) => {
 	dispatch(setIsGameContinues({ value: true }));
 };
 
-const endGame = (dispatch: Dispatch) => {
+const endGame = (dispatch: Dispatch, delay: number = 0) => {
 	dispatch(setIsGameContinues({ value: false }));
 	setTimeout(() => {
 		resetGame(dispatch);
-	}, 1500);
+	}, delay);
 };
 
-export default endGame
+export default endGame;
