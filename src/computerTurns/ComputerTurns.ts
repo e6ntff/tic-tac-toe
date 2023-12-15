@@ -19,7 +19,7 @@ const makeComputerTurnDependsOnDifficulty = (
 			makeComputerTurnMedium(values, symbol, endTurn);
 			break;
 		case 'hard':
-			makeComputerTurnHard(values, symbol, endTurn);
+			// makeComputerTurnHard(values, symbol, endTurn);
 			break;
 		default:
 			alert('Error!');
@@ -54,82 +54,93 @@ const makeComputerTurnMedium = (
 	endTurn: any
 ) => {};
 
-const makeComputerTurnHard = (
-  values: Value[],
-  symbol: string,
-  endTurn: any
-): void => {
-  const bestMove = minimax(values, symbol);
-  values[bestMove.index || 0].value = symbol === '×' ? '○' : '×';
-  values[bestMove.index || 0].active = false;
-  endTurn(values);
-};
+// const makeComputerTurnHard = (
+//   values: Value[],
+//   symbol: string,
+//   endTurn: any
+// ): void => {
+//   const minimax = (board: Value[], depth: number, isMaximizing: boolean): number => {
+//     const score = evaluateBoard(board, symbol);
 
-const minimax = (values: Value[], symbol: string): MinimaxResult => {
-  const emptyCells = values.filter((cell) => cell.value === '');
+//     if (score !== 0) {
+//       return score;
+//     }
 
-  // Если пустых ячеек больше нет, возвращаем оценку текущего состояния
-  if (emptyCells.length === 0) {
-    return { score: evaluateBoard(values, symbol) };
-  }
+//     if (isMaximizing) {
+//       let bestScore = -Infinity;
 
-  // Создаем массив для хранения оценок и индексов пустых ячеек
-  const moves: MinimaxResult[] = [];
+//       for (let i = 0; i < board.length; i++) {
+//         const cell = board[i];
 
-  // Проходим по всем пустым ячейкам
-  for (const emptyCell of emptyCells) {
-    // Создаем копию доски
-    const newValues = values.map((cell) => ({ ...cell }));
+//         if (cell.value === '') {
+//           cell.value = symbol;
+//           const currentScore = minimax(board, depth + 1, false);
+//           cell.value = '';
 
-    // Делаем ход в текущую пустую ячейку
-    newValues[emptyCell.index || 0].value = symbol;
-    newValues[emptyCell.index || 0].active = false;
+//           bestScore = Math.max(currentScore, bestScore);
+//         }
+//       }
 
-    // Вызываем минимакс для получения оценки хода
-    const move = minimax(newValues, symbol === '×' ? '○' : '×');
+//       return bestScore;
+//     } else {
+//       let bestScore = Infinity;
 
-    // Сохраняем оценку и индекс текущего хода
-    moves.push({ score: move.score, index: emptyCell.index });
-  }
+//       for (let i = 0; i < board.length; i++) {
+//         const cell = board[i];
 
-  // Выбираем наилучший ход в зависимости от текущего символа (максимизируем или минимизируем)
-  return symbol === '×' ? maxMove(moves) : minMove(moves);
-};
+//         if (cell.value === '') {
+//           cell.value = symbol === '×' ? '○' : '×';
+//           const currentScore = minimax(board, depth + 1, true);
+//           cell.value = '';
 
-const evaluateBoard = (values: Value[], symbol: string): number => {
-  // Реализуйте оценку текущего состояния доски
-  // Верните положительное значение, если выигрыш, отрицательное, если проигрыш, 0 в противном случае
-  return 0;
-};
+//           bestScore = Math.min(currentScore, bestScore);
+//         }
+//       }
 
-const maxMove = (moves: MinimaxResult[]): MinimaxResult => {
-  // Находим максимальную оценку
-  let bestScore = -Infinity;
-  let bestMove: MinimaxResult | null = null;
+//       return bestScore;
+//     }
+//   };
 
-  for (const move of moves) {
-    if (move.score > bestScore) {
-      bestScore = move.score;
-      bestMove = move;
-    }
-  }
+//   const bestMove = (): MinimaxResult => {
+//     let bestScore = -Infinity;
+//     let bestMove: MinimaxResult = { score: -Infinity, index: -1 };
 
-  return bestMove as MinimaxResult;
-};
+//     for (let i = 0; i < values.length; i++) {
+//       const cell = values[i];
 
-const minMove = (moves: MinimaxResult[]): MinimaxResult => {
-  // Находим минимальную оценку
-  let bestScore = Infinity;
-  let bestMove: MinimaxResult | null = null;
+//       if (cell.value === '') {
+//         // Type assertion: временно добавляем поле index
+//         const cellWithIndex = { ...(cell as any), index: i };
 
-  for (const move of moves) {
-    if (move.score < bestScore) {
-      bestScore = move.score;
-      bestMove = move;
-    }
-  }
+//         cellWithIndex.value = symbol;
+//         const moveScore = minimax(values, 0, false);
+//         cellWithIndex.value = '';
 
-  return bestMove as MinimaxResult;
-};
+//         if (moveScore > bestScore) {
+//           bestScore = moveScore;
+//           bestMove = { score: moveScore, index: i };
+//         }
+//       }
+//     }
+
+//     return bestMove;
+//   };
+
+//   const move = bestMove();
+
+//   // Проверяем, что индекс определен и валиден
+//   if (move.index !== undefined && move.index >= 0 && move.index < values.length) {
+//     // Type assertion: временно добавляем поле index
+//     values[move.index] = { ...(values[move.index] as any), index: move.index };
+
+//     values[move.index].value = symbol === '×' ? '○' : '×';
+//     values[move.index].active = false;
+//     endTurn(values);
+//   } else {
+//     // Обработка случая, когда индекс не определен или некорректен
+//     console.error("Invalid move index:", move.index);
+//   }
+// };
+
 
 export default makeComputerTurnDependsOnDifficulty;

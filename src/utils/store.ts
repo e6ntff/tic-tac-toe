@@ -19,6 +19,7 @@ const initialState: State = {
 	currentSymbol: '×',
 	isGameContinues: true,
 	isComputerTurn: false,
+	gameResult: '',
 };
 
 const gameSlice = createSlice({
@@ -47,6 +48,9 @@ const gameSlice = createSlice({
 		setIsComputerTurn: (state, action) => {
 			state.isComputerTurn = action.payload.value;
 		},
+		setGameResult: (state, action) => {
+			state.gameResult = action.payload.value
+		},
 	},
 });
 
@@ -72,6 +76,8 @@ export const getIs2Players = (state: any) => state.game.is2Players;
 
 export const getIsComputerTurn = (state: any) => state.game.isComputerTurn;
 
+export const getGameResult = (state: any) => state.game.gameResult
+
 export const {
 	setValues,
 	changeDifficulty,
@@ -79,6 +85,7 @@ export const {
 	changeSymbol,
 	setIsGameContinues,
 	setIsComputerTurn,
+	setGameResult
 } = gameSlice.actions;
 
 export default GlobalStore;

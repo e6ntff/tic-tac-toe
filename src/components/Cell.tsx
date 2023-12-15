@@ -34,7 +34,7 @@ const Cell: React.FC<Props> = (props) => {
 	const endTurn = (values: Value[]) => {
 		dispatch(setValues({ values: values }));
 
-		if (isGameEnded(values)) {
+		if (isGameEnded(values, symbol, dispatch)) {
 			endGame(dispatch, endGameDelay);
 			return true;
 		}

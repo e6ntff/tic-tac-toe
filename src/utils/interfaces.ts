@@ -10,4 +10,5 @@ export interface State {
 	currentSymbol: string;
 	isGameContinues: boolean;
 	isComputerTurn: boolean;
+	gameResult: string;
 }
