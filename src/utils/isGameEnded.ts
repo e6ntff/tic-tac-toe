@@ -1,21 +1,18 @@
 import { Value } from './interfaces';
 import { setGameResult } from './store';
 
+const winPatterns = [
+	[0, 1, 2],
+	[3, 4, 5],
+	[6, 7, 8],
+	[0, 3, 6],
+	[1, 4, 7],
+	[2, 5, 8],
+	[0, 4, 8],
+	[2, 4, 6],
+];
+
 const isGameEnded = (values: Value[], symbol: string, dispatch: any) => {
-	if (!values.some((value) => value.value === '')) {
-		dispatch(setGameResult({value: 'draft'}))
-		return true
-	}
-	const winPatterns = [
-		[0, 1, 2],
-		[3, 4, 5],
-		[6, 7, 8],
-		[0, 3, 6],
-		[1, 4, 7],
-		[2, 5, 8],
-		[0, 4, 8],
-		[2, 4, 6],
-	];
 
 	for (const pattern of winPatterns) {
 		const [a, b, c] = pattern;
@@ -27,6 +24,10 @@ const isGameEnded = (values: Value[], symbol: string, dispatch: any) => {
 			dispatch(setGameResult({value: `${symbol} won`}))
 			return true;
 		}
+	}
+	if (!values.some((value) => value.value === '')) {
+		dispatch(setGameResult({value: 'draw'}))
+		return true
 	}
 	return false;
 };
